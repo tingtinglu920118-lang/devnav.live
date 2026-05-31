@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IndieKit — 独立开发者资源导航</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── Tokens ── */
+:root {
+  --ink:        #0d0d0d;
+  --ink-2:      #1a1a1a;
+  --ink-3:      #2a2a2a;
+  --paper:      #f4f1eb;
+  --paper-2:    #ece8e0;
+  --paper-3:    #e2ddd3;
+  --accent:     #e8410a;
+  --accent-2:   #ff6b35;
+  --gold:       #c9a84c;
+  --teal:       #1a7a6e;
+  --violet:     #5b3fa6;
+  --muted:      #7a7065;
+  --border:     rgba(13,13,13,0.1);
+  --border-dark:rgba(13,13,13,0.2);
+  --r-sm: 6px; --r-md: 12px; --r-lg: 20px;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Outfit', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Grain texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999;
+}
+
+/* ── Layout ── */
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
+
+/* ── Header ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--ink);
+  border-bottom: 3px solid var(--accent);
+}
+.header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px; gap: 20px;
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 28px; letter-spacing: 2px;
+  color: var(--paper);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-badge {
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--accent-2);
+  background: rgba(232,65,10,0.15);
+  border: 1px solid rgba(232,65,10,0.3);
+  padding: 2px 8px; border-radius: 3px;
+  margin-top: 2px;
+}
+.header-nav {
+  display: flex; align-items: center; gap: 4px;
+  flex-wrap: wrap;
+}
+.nav-pill {
+  font-size: 12px; font-weight: 500;
+  color: rgba(244,241,235,0.6);
+  padding: 5px 12px; border-radius: 3px;
+  text-decoration: none; cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.nav-pill:hover, .nav-pill.active {
+  color: var(--paper); background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.1);
+}
+.nav-pill[data-cat="research"] { --cat-color: #e8410a; }
+.nav-pill[data-cat="launch"]   { --cat-color: #c9a84c; }
+.nav-pill[data-cat="compete"]  { --cat-color: #1a7a6e; }
+.nav-pill[data-cat="template"] { --cat-color: #5b3fa6; }
+.nav-pill[data-cat="insight"]  { --cat-color: #2563eb; }
+.nav-pill[data-cat="reading"]  { --cat-color: #db2777; }
+.nav-pill.active { color: var(--cat-color) !important; border-color: var(--cat-color) !important; }
+
+/* Search bar */
+.search-wrap {
+  position: relative; display: flex; align-items: center;
+}
+.search-input {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--paper);
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 6px 12px 6px 32px;
+  border-radius: var(--r-sm); width: 180px;
+  transition: all 0.2s; outline: none;
+}
+.search-input::placeholder { color: rgba(244,241,235,0.35); }
+.search-input:focus { border-color: var(--accent); width: 220px; background: rgba(255,255,255,0.1); }
+.search-icon {
+  position: absolute; left: 10px;
+  color: rgba(244,241,235,0.4); font-size: 13px; pointer-events: none;
+}
+
+/* ── Hero Banner ── */
+.hero {
+  background: var(--ink-2);
+  border-bottom: 1px solid var(--ink-3);
+  padding: 52px 0 44px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: 'INDIE\ADEV\AKIT';
+  white-space: pre;
+  position: absolute; right: -20px; top: -20px;
+  font-family: var(--font-display);
+  font-size: 160px; line-height: 0.85;
+  color: rgba(255,255,255,0.03);
+  pointer-events: none; letter-spacing: 4px;
+  user-select: none;
+}
+.hero-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8vw, 96px);
+  line-height: 0.9; letter-spacing: 3px;
+  color: var(--paper);
+}
+.hero-title em {
+  font-style: normal;
+  -webkit-text-stroke: 1px var(--accent);
+  color: transparent;
+}
+.hero-sub {
+  font-size: 15px; font-weight: 300;
+  color: rgba(244,241,235,0.55);
+  max-width: 380px; line-height: 1.7;
+  margin-top: 16px;
+}
+.hero-sub strong { color: var(--accent-2); font-weight: 500; }
+.hero-stats {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  padding-bottom: 4px;
+}
+.hero-stat { text-align: center; }
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 40px; color: var(--paper);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(244,241,235,0.4);
+  margin-top: 4px;
+}
+
+/* ── Main Content ── */
+main { padding: 48px 0 80px; }
+
+/* Section ── */
+.section { margin-bottom: 56px; }
+.section-header {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  position: relative;
+}
+.section-header::before {
+  content: '';
+  position: absolute; bottom: -2px; left: 0;
+  height: 2px; width: 60px;
+  background: var(--cat-clr, var(--accent));
+  transition: width 0.4s;
+}
+.section-header:hover::before { width: 120px; }
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--cat-clr, var(--accent));
+  background: rgba(0,0,0,0.05);
+  padding: 2px 8px; border-radius: 3px;
+  flex-shrink: 0;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 32px; letter-spacing: 1.5px;
+  color: var(--ink);
+}
+.section-desc {
+  font-size: 13px; color: var(--muted); font-weight: 300;
+  margin-left: auto;
+}
+
+/* ── Card Grid ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.card-grid.wide { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+
+/* ── Card ── */
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: all 0.22s cubic-bezier(0.34,1.3,0.64,1);
+  position: relative; overflow: hidden;
+  cursor: pointer;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--cat-clr, var(--accent));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); border-color: var(--border-dark); }
+.card:hover::before { transform: scaleX(1); }
+
+.card-row { flex-direction: row; align-items: flex-start; gap: 14px; }
+.card-row .card-body { flex: 1; min-width: 0; }
+
+.card-icon {
+  width: 40px; height: 40px; border-radius: var(--r-sm);
+  background: var(--paper-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.card-label {
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--cat-clr, var(--accent));
+  margin-bottom: 2px;
+}
+.card-name {
+  font-size: 15px; font-weight: 600;
+  color: var(--ink); line-height: 1.3;
+}
+.card-url {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: block; margin-top: 2px;
+}
+.card-desc {
+  font-size: 13px; font-weight: 300;
+  color: #555; line-height: 1.55;
+}
+.card-arrow {
+  position: absolute; bottom: 16px; right: 16px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  transform: rotate(-45deg);
+  transition: all 0.2s;
+  opacity: 0;
+}
+.card:hover .card-arrow { opacity: 1; transform: rotate(0deg); }
+
+/* ── Tag chip ── */
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 500;
+  padding: 3px 9px; border-radius: 3px;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+/* ── Reading List ── */
+.reading-list { display: flex; flex-direction: column; gap: 10px; }
+.reading-item {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 16px;
+  text-decoration: none; color: inherit;
+  transition: all 0.2s;
+}
+.reading-item:hover { border-color: var(--cat-clr, var(--accent)); transform: translateX(4px); }
+.reading-date {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--muted); flex-shrink: 0; width: 72px;
+}
+.reading-title { font-size: 14px; font-weight: 500; flex: 1; }
+.reading-arrow { color: var(--muted); font-size: 12px; flex-shrink: 0; }
+
+/* ── Domain Tools ── */
+.domain-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.domain-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  text-decoration: none; color: inherit;
+  transition: all 0.2s;
+}
+.domain-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.domain-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+.domain-card-name { font-size: 14px; font-weight: 600; }
+.domain-card-url { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* ── Banner strip ── */
+.tip-strip {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-md);
+  padding: 20px 28px;
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 48px;
+}
+.tip-icon { font-size: 28px; flex-shrink: 0; }
+.tip-text { font-size: 14px; font-weight: 300; color: rgba(244,241,235,0.75); line-height: 1.6; }
+.tip-text strong { color: var(--accent-2); font-weight: 600; }
+
+/* ── Footer ── */
+footer {
+  background: var(--ink);
+  color: rgba(244,241,235,0.5);
+  padding: 32px 0;
+  font-size: 13px; text-align: center;
+  border-top: 3px solid var(--ink-3);
+}
+footer strong { color: var(--paper); }
+
+/* ── Filter animation ── */
+.section { transition: opacity 0.3s; }
+.section.hidden { display: none; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb { background: var(--ink-3); border-radius: 3px; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header-nav { display: none; }
+  .hero-inner { flex-direction: column; gap: 28px; }
+  .hero::before { font-size: 80px; }
+  .wrap { padding: 0 16px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .domain-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .search-input { width: 140px; }
+  .hero-stats { gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="wrap header-inner">
+    <a href="#" class="logo">
+      IndieKit
+      <span class="logo-badge">独立开发者导航</span>
+    </a>
+    <nav class="header-nav" id="mainNav">
+      <a class="nav-pill active" data-cat="all" onclick="filter('all')">全部</a>
+      <a class="nav-pill" data-cat="research" onclick="filter('research')">需求调研</a>
+      <a class="nav-pill" data-cat="launch" onclick="filter('launch')">上站必备</a>
+      <a class="nav-pill" data-cat="compete" onclick="filter('compete')">竞品分析</a>
+      <a class="nav-pill" data-cat="template" onclick="filter('template')">开源模板</a>
+      <a class="nav-pill" data-cat="insight" onclick="filter('insight')">资讯情报</a>
+      <a class="nav-pill" data-cat="reading" onclick="filter('reading')">精华文章</a>
+    </nav>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" type="text" placeholder="搜索资源..." id="searchInput" oninput="search(this.value)"/>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <div class="hero-title">INDIE<br/><em>DEV</em><br/>TOOLKIT</div>
+      <p class="hero-sub">
+        为<strong>独立开发者</strong>精选的工具导航 ——<br/>
+        从需求调研、SEO 分析、竞品研究，<br/>到开源模板、出海资讯，一站搞定。
+      </p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">60+</div>
+        <div class="hero-stat-label">精选资源</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">6</div>
+        <div class="hero-stat-label">资源分类</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">∞</div>
+        <div class="hero-stat-label">持续更新</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<main>
+<div class="wrap">
+
+  <div class="tip-strip">
+    <span class="tip-icon">💡</span>
+    <p class="tip-text"><strong>独立开发者信条：</strong>多上站实在，多干活多实践 —— 世界给你的反馈远大于站在岸上看别人实践游泳。先做起来，再迭代优化。</p>
+  </div>
+
+  <!-- ── SECTION 1: 需求调研 ── -->
+  <section class="section" data-section="research" style="--cat-clr: #e8410a">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">需求收集 & 关键词调研</h2>
+      <span class="section-desc">找方向、挖需求、验证关键词竞争度</span>
+    </div>
+    <div class="card-grid">
+
+      <a class="card" href="https://www.searchsuggest.tips/" target="_blank" rel="noopener" style="--cat-clr:#e8410a">
+        <div class="card-icon">🔍</div>
+        <div class="card-label">关键词工具</div>
+        <div class="card-name">Google 下拉词挖掘</div>
+        <div class="card-url">searchsuggest.tips</div>
+        <div class="card-desc">批量获取 Google 搜索下拉建议，发现长尾关键词机会。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://www.toolify.ai/Best-AI-Tools-revenue" target="_blank" rel="noopener" style="--cat-clr:#e8410a">
+        <div class="card-icon">📊</div>
+        <div class="card-label">流量榜单</div>
+        <div class="card-name">Toolify 收入榜</div>
+        <div class="card-url">toolify.ai</div>
+        <div class="card-desc">AI 工具按流量 / 收入排行，快速发现赚钱赛道和竞品方向。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://theresanaiforthat.com/requests" target="_blank" rel="noopener" style="--cat-clr:#e8410a">
+        <div class="card-icon">📋</div>
+        <div class="card-label">需求列表</div>
+        <div class="card-name">AI 导航需求墙</div>
+        <div class="card-url">theresanaiforthat.com/requests</div>
+        <div class="card-desc">真实用户提交的 AI 工具需求，最直接的产品 idea 来源。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://ahrefs.com/keyword-difficulty" target="_blank" rel="noopener" style="--cat-clr:#e8410a">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">SEO 工具</div>
+        <div class="card-name">Ahrefs 关键词难度</div>
+        <div class="card-url">ahrefs.com/keyword-difficulty</div>
+        <div class="card-desc">免费查询关键词 KD 竞争难度，评估 SEO 切入可行性。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: 上站必备 ── -->
+  <section class="section" data-section="launch" style="--cat-clr: #c9a84c">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">上站必备工具</h2>
+      <span class="section-desc">域名注册、代码托管、数据后台</span>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 10px;">— 域名查询</div>
+      <div class="domain-grid">
+        <a class="domain-card" href="https://leandomainsearch.com" target="_blank" rel="noopener">
+          <div class="domain-card-label">查询工具</div>
+          <div class="domain-card-name">Lean Domain Search</div>
+          <div class="domain-card-url">leandomainsearch.com</div>
+        </a>
+        <a class="domain-card" href="https://query.domains/" target="_blank" rel="noopener">
+          <div class="domain-card-label">查询工具</div>
+          <div class="domain-card-name">Query Domains</div>
+          <div class="domain-card-url">query.domains</div>
+        </a>
+        <a class="domain-card" href="https://instantdomainsearch.com/" target="_blank" rel="noopener">
+          <div class="domain-card-label">实时查询</div>
+          <div class="domain-card-name">Instant Domain Search</div>
+          <div class="domain-card-url">instantdomainsearch.com</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="card-grid">
+
+      <a class="card" href="https://spaceship.com" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">🚀</div>
+        <div class="card-label">域名注册</div>
+        <div class="card-name">Spaceship</div>
+        <div class="card-url">spaceship.com</div>
+        <div class="card-desc">性价比高的域名注册商，适合批量注册多个项目域名。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://porkbun.com" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">🐷</div>
+        <div class="card-label">域名注册</div>
+        <div class="card-name">Porkbun</div>
+        <div class="card-url">porkbun.com</div>
+        <div class="card-desc">价格透明、无套路，免费附赠 WHOIS 隐私保护。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://namecheap.com" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">💰</div>
+        <div class="card-label">域名注册</div>
+        <div class="card-name">Namecheap</div>
+        <div class="card-url">namecheap.com</div>
+        <div class="card-desc">老牌注册商，经常有促销活动，支持免费 DNS 管理。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://github.com" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">🐙</div>
+        <div class="card-label">代码托管</div>
+        <div class="card-name">GitHub</div>
+        <div class="card-url">github.com</div>
+        <div class="card-desc">代码版本管理 + Actions CI/CD，独立开发者必用基础设施。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://cloudflare.com" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">☁️</div>
+        <div class="card-label">网站托管</div>
+        <div class="card-name">Cloudflare</div>
+        <div class="card-url">cloudflare.com</div>
+        <div class="card-desc">Pages 静态托管免费、CDN 全球加速、DNS 管理一体化。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://vercel.com" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">▲</div>
+        <div class="card-label">网站托管</div>
+        <div class="card-name">Vercel</div>
+        <div class="card-url">vercel.com</div>
+        <div class="card-desc">Next.js 最佳部署平台，零配置、秒级发布，免费额度够用。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://search.google.com/search-console" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">📈</div>
+        <div class="card-label">数据后台</div>
+        <div class="card-name">Google Search Console</div>
+        <div class="card-url">search.google.com/search-console</div>
+        <div class="card-desc">监控关键词排名、点击率、收录状态，SEO 必看数据。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://analytics.google.com" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">📉</div>
+        <div class="card-label">数据后台</div>
+        <div class="card-name">Google Analytics</div>
+        <div class="card-url">analytics.google.com</div>
+        <div class="card-desc">用户行为分析、转化漏斗、流量来源追踪，免费且强大。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://www.bing.com/webmasters/submiturl" target="_blank" rel="noopener" style="--cat-clr:#c9a84c">
+        <div class="card-icon">🅱️</div>
+        <div class="card-label">数据后台</div>
+        <div class="card-name">Bing Webmaster</div>
+        <div class="card-url">bing.com/webmasters</div>
+        <div class="card-desc">提交 URL 加速 Bing 收录，覆盖微软必应流量渠道。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: 竞品分析 ── -->
+  <section class="section" data-section="compete" style="--cat-clr: #1a7a6e">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">竞品调研工具</h2>
+      <span class="section-desc">流量来源、关键词矩阵、外链分析</span>
+    </div>
+    <div class="card-grid">
+
+      <a class="card" href="https://aitdk.com" target="_blank" rel="noopener" style="--cat-clr:#1a7a6e">
+        <div class="card-icon">🔭</div>
+        <div class="card-label">流量分析</div>
+        <div class="card-name">AITDK</div>
+        <div class="card-url">aitdk.com</div>
+        <div class="card-desc">免费查询网站流量估算 + 关键词，快速摸清竞品 SEO 策略。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://ahrefs.com/free-seo-tools" target="_blank" rel="noopener" style="--cat-clr:#1a7a6e">
+        <div class="card-icon">🔗</div>
+        <div class="card-label">外链分析</div>
+        <div class="card-name">Ahrefs Free Tools</div>
+        <div class="card-url">ahrefs.com/free-seo-tools</div>
+        <div class="card-desc">免费的外链检查、域名评分、关键词查询等 SEO 工具合集。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://semrush.com" target="_blank" rel="noopener" style="--cat-clr:#1a7a6e">
+        <div class="card-icon">📡</div>
+        <div class="card-label">全站分析</div>
+        <div class="card-name">Semrush</div>
+        <div class="card-url">semrush.com</div>
+        <div class="card-desc">竞品关键词全景分析，挖掘对手流量来源和内容策略。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://ahrefs.com/websites#trending" target="_blank" rel="noopener" style="--cat-clr:#1a7a6e">
+        <div class="card-icon">🏄</div>
+        <div class="card-label">趋势发现</div>
+        <div class="card-name">Ahrefs 趋势网站榜</div>
+        <div class="card-url">ahrefs.com/websites#trending</div>
+        <div class="card-desc">实时增长最快的网站榜单，早发现新赛道、新竞品。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: 开源模板 ── -->
+  <section class="section" data-section="template" style="--cat-clr: #5b3fa6">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">开源模板 & Boilerplate</h2>
+      <span class="section-desc">快速起步，站在巨人的肩膀上</span>
+    </div>
+
+    <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed var(--border);">─ SaaS / Full-Stack Boilerplate</div>
+    <div class="card-grid wide" style="margin-bottom: 24px;">
+
+      <a class="card card-row" href="https://github.com/ixartz/Next-js-Boilerplate" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">⬛</div>
+        <div class="card-body">
+          <div class="card-label">Next.js</div>
+          <div class="card-name">Next.js 15 Boilerplate</div>
+          <div class="card-url">github.com/ixartz/Next-js-Boilerplate</div>
+          <div class="card-desc">App Router + Page Router 双支持，开箱即用。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/ixartz/SaaS-Boilerplate" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">💎</div>
+        <div class="card-body">
+          <div class="card-label">SaaS</div>
+          <div class="card-name">SaaS Boilerplate</div>
+          <div class="card-url">github.com/ixartz/SaaS-Boilerplate</div>
+          <div class="card-desc">Next.js + Tailwind + Shadcn + TypeScript 全家桶。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/saasfly/saasfly" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🪁</div>
+        <div class="card-body">
+          <div class="card-label">SaaS</div>
+          <div class="card-name">Saasfly</div>
+          <div class="card-url">github.com/saasfly/saasfly</div>
+          <div class="card-desc">bun 一键创建 SaaS 项目，内置 Stripe + 认证。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/JavascriptMick/supanuxt-saas" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🟢</div>
+        <div class="card-body">
+          <div class="card-label">Nuxt 3</div>
+          <div class="card-name">Supanuxt SaaS</div>
+          <div class="card-url">github.com/JavascriptMick/supanuxt-saas</div>
+          <div class="card-desc">Nuxt3 + Supabase + Stripe + Tailwind + OpenAI。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/wasp-lang/open-saas/" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🐝</div>
+        <div class="card-body">
+          <div class="card-label">React + Node</div>
+          <div class="card-name">Open SaaS (Wasp)</div>
+          <div class="card-url">github.com/wasp-lang/open-saas</div>
+          <div class="card-desc">免费开源 SaaS starter，React + Node.js，全功能。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/mundane799699/xlike-web" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">⚡</div>
+        <div class="card-body">
+          <div class="card-label">ShipFast</div>
+          <div class="card-name">ShipFast — TypeScript</div>
+          <div class="card-url">github.com/mundane799699/xlike-web</div>
+          <div class="card-desc">快速 Ship 产品的 TypeScript 全栈模板。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+    </div>
+
+    <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed var(--border);">─ Landing Page / Blog</div>
+    <div class="card-grid wide" style="margin-bottom: 24px;">
+
+      <a class="card card-row" href="https://github.com/ixartz/Next-JS-Landing-Page-Starter-Template" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🏠</div>
+        <div class="card-body">
+          <div class="card-label">Landing Page</div>
+          <div class="card-name">Next.js Landing Page</div>
+          <div class="card-url">github.com/ixartz</div>
+          <div class="card-desc">免费 Next.js 落地页模板，开箱即用。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/weijunext/landing-page-boilerplate" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🛸</div>
+        <div class="card-body">
+          <div class="card-label">Landing Page</div>
+          <div class="card-name">Ship Landing Page Fast</div>
+          <div class="card-url">github.com/weijunext</div>
+          <div class="card-desc">通用落地页 Boilerplate，适合多种产品和营销活动。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/openRin/Rin" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">✍️</div>
+        <div class="card-body">
+          <div class="card-label">Blog</div>
+          <div class="card-name">Rin — Dynamic Blog</div>
+          <div class="card-url">github.com/openRin/Rin</div>
+          <div class="card-desc">基于 Cloudflare Pages + Workers + D1 + R2 的动态博客。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/weijunext/new-blog" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">📰</div>
+        <div class="card-body">
+          <div class="card-label">周刊 Blog</div>
+          <div class="card-name">weijunext 周刊模板</div>
+          <div class="card-url">github.com/weijunext/new-blog</div>
+          <div class="card-desc">适合做独立开发者周刊 / 技术博客的 Next.js 模板。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/ixartz/Astro-boilerplate" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🚀</div>
+        <div class="card-body">
+          <div class="card-label">Astro</div>
+          <div class="card-name">Astro Boilerplate</div>
+          <div class="card-url">github.com/ixartz/Astro-boilerplate</div>
+          <div class="card-desc">响应式博客 + 作品集模板，SEO 友好，极致速度。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+    </div>
+
+    <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed var(--border);">─ 导航站模板</div>
+    <div class="card-grid wide">
+
+      <a class="card card-row" href="https://github.com/fre123-com/fre123-nav/" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🧭</div>
+        <div class="card-body">
+          <div class="card-label">导航站</div>
+          <div class="card-name">FRE123 Nav</div>
+          <div class="card-url">github.com/fre123-com/fre123-nav</div>
+          <div class="card-desc">一键搭建免费资源共享平台导航网站。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🌐</div>
+        <div class="card-body">
+          <div class="card-label">导航站</div>
+          <div class="card-name">WebStack 静态导航</div>
+          <div class="card-url">github.com/WebStackPage</div>
+          <div class="card-desc">静态响应式网址导航，无需后端，直接部署。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/6677-ai/tap4-ai-webui" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🤖</div>
+        <div class="card-body">
+          <div class="card-label">AI 导航</div>
+          <div class="card-name">Tap4 AI WebUI</div>
+          <div class="card-url">github.com/6677-ai/tap4-ai-webui</div>
+          <div class="card-desc">一键部署你自己的 AI 工具导航站，开源可自定义。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/dubinc/oss-gallery" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🖼️</div>
+        <div class="card-body">
+          <div class="card-label">开源展示</div>
+          <div class="card-name">OSS Gallery</div>
+          <div class="card-url">github.com/dubinc/oss-gallery</div>
+          <div class="card-desc">优秀开源项目众包列表，基于 Dub TypeScript SDK 构建。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/all-in-aigc/gpts-works" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">🤝</div>
+        <div class="card-body">
+          <div class="card-label">GPTs 导航</div>
+          <div class="card-name">GPTs Works</div>
+          <div class="card-url">github.com/all-in-aigc/gpts-works</div>
+          <div class="card-desc">第三方 GPTs 商店，发现全球 GPTs 应用。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card card-row" href="https://github.com/DokeyAI/dokeyai-data" target="_blank" rel="noopener" style="--cat-clr:#5b3fa6">
+        <div class="card-icon">📦</div>
+        <div class="card-body">
+          <div class="card-label">数据源</div>
+          <div class="card-name">DokeyAI 公开数据</div>
+          <div class="card-url">dokeyai.com · github.com/DokeyAI</div>
+          <div class="card-desc">可用于网站的公开 AI 工具数据集，省去手动录入。</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 5: 资讯情报 ── -->
+  <section class="section" data-section="insight" style="--cat-clr: #2563eb">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">资讯 & 情报来源</h2>
+      <span class="section-desc">保持信息优势，发现下一个机会</span>
+    </div>
+    <div class="card-grid">
+
+      <a class="card" href="https://liberating-doll-b8a.notion.site/Reddit-1a8e8aed91b18021839ecba8b74e530b" target="_blank" rel="noopener" style="--cat-clr:#2563eb">
+        <div class="card-icon">🟠</div>
+        <div class="card-label">社区</div>
+        <div class="card-name">Reddit 独立开发精选子版</div>
+        <div class="card-url">notion.site (Reddit 合集)</div>
+        <div class="card-desc">精选独立开发、出海相关的 Reddit 社区汇总，英文第一手信息。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content?hl=zh-cn" target="_blank" rel="noopener" style="--cat-clr:#2563eb">
+        <div class="card-icon">📗</div>
+        <div class="card-label">官方文档</div>
+        <div class="card-name">谷歌 SEO 基础知识</div>
+        <div class="card-url">developers.google.com</div>
+        <div class="card-desc">Google 官方搜索文档，了解 Helpful Content 算法和排名逻辑。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://ahrefs.com/websites#trending" target="_blank" rel="noopener" style="--cat-clr:#2563eb">
+        <div class="card-icon">📈</div>
+        <div class="card-label">趋势榜</div>
+        <div class="card-name">Ahrefs 趋势网站</div>
+        <div class="card-url">ahrefs.com/websites#trending</div>
+        <div class="card-desc">全球增长最快的网站实时榜单，发现新兴赛道。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://docs.google.com/spreadsheets/d/1QOdqq9KbjQj1JZO43vc1pir2rnEEsMUgid=0#gid=0" target="_blank" rel="noopener" style="--cat-clr:#2563eb">
+        <div class="card-icon">🎬</div>
+        <div class="card-label">工具清单</div>
+        <div class="card-name">AI Video SaaS Tool 清单</div>
+        <div class="card-url">Google Sheets</div>
+        <div class="card-desc">AI 视频 SaaS 工具汇总表格，竞品调研和选品参考。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://docs.google.com/spreadsheets/d/1eUni44plURML2VWFFXKzNmm-WKuuam9_ynr5Fo_Q74M/edit?gid=83151001#gid=83151001" target="_blank" rel="noopener" style="--cat-clr:#2563eb">
+        <div class="card-icon">📊</div>
+        <div class="card-label">报告</div>
+        <div class="card-name">Solopreneur Report 2.0</div>
+        <div class="card-url">Starter Story Premium</div>
+        <div class="card-desc">独立创业者数据报告，收入规模和盈利策略的深度分析。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://www.500mrr.com/" target="_blank" rel="noopener" style="--cat-clr:#2563eb">
+        <div class="card-icon">💵</div>
+        <div class="card-label">案例库</div>
+        <div class="card-name">$500/月副业案例</div>
+        <div class="card-url">500mrr.com</div>
+        <div class="card-desc">真实独立开发者的月收入 $500+ 副业项目案例，大量可复刻 idea。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://news.ycombinator.com/item?id=42373343" target="_blank" rel="noopener" style="--cat-clr:#2563eb">
+        <div class="card-icon">🔶</div>
+        <div class="card-label">HN 讨论</div>
+        <div class="card-name">Ask HN: 副业月入 $500</div>
+        <div class="card-url">news.ycombinator.com</div>
+        <div class="card-desc">Hacker News 热门帖，全球独立开发者分享副业盈利经验。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://daimajia.huntscreens.com" target="_blank" rel="noopener" style="--cat-clr:#2563eb">
+        <div class="card-icon">🖥️</div>
+        <div class="card-label">产品发现</div>
+        <div class="card-name">HuntScreens</div>
+        <div class="card-url">daimajia.huntscreens.com</div>
+        <div class="card-desc">可视化浏览 ProductHunt、YC、Indiehackers 最新项目截图。</div>
+        <div class="card-arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 6: 精华文章 ── -->
+  <section class="section" data-section="reading" style="--cat-clr: #db2777">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">生财精华文章</h2>
+      <span class="section-desc">独立开发 & 出海相关，值得反复阅读</span>
+    </div>
+    <div class="reading-list">
+
+      <a class="reading-item" href="https://scys.com/articleDetail/xq_topic/1525814845844482" target="_blank" rel="noopener" style="--cat-clr:#db2777">
+        <span class="reading-date">2025-03-01</span>
+        <span class="reading-title">不要轻易称自己为独立开发者</span>
+        <span class="reading-arrow">→</span>
+      </a>
+
+      <a class="reading-item" href="https://scys.com/articleDetail/xq_topic/2858151258225521" target="_blank" rel="noopener" style="--cat-clr:#db2777">
+        <span class="reading-date">2025-02-06</span>
+        <span class="reading-title">AI 编程赛道第一课：Build a business，not an App</span>
+        <span class="reading-arrow">→</span>
+      </a>
+
+      <a class="reading-item" href="https://scys.com/articleDetail/xq_topic/4848511545851418" target="_blank" rel="noopener" style="--cat-clr:#db2777">
+        <span class="reading-date">2024-11-13</span>
+        <span class="reading-title">只靠想法就能赚钱的时代到来了！</span>
+        <span class="reading-arrow">→</span>
+      </a>
+
+      <a class="reading-item" href="https://scys.com/articleDetail/xq_topic/5121548228815414" target="_blank" rel="noopener" style="--cat-clr:#db2777">
+        <span class="reading-date">2024-11-05</span>
+        <span class="reading-title">翻石头，是独立开发者的日常修行。</span>
+        <span class="reading-arrow">→</span>
+      </a>
+
+      <a class="reading-item" href="https://scys.com/articleDetail/xq_topic/5122484888125484" target="_blank" rel="noopener" style="--cat-clr:#db2777">
+        <span class="reading-date">2024-07-23</span>
+        <span class="reading-title">用 AI 自学编程的最好时机到来了</span>
+        <span class="reading-arrow">→</span>
+      </a>
+
+      <a class="reading-item" href="https://vercel.com/templates" target="_blank" rel="noopener" style="--cat-clr:#db2777">
+        <span class="reading-date">持续更新</span>
+        <span class="reading-title">Vercel 模板中心 — 大量高质量模板可参考学习</span>
+        <span class="reading-arrow">→</span>
+      </a>
+
+    </div>
+  </section>
+
+</div>
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="wrap">
+    <p><strong>IndieKit</strong> · 独立开发者资源导航 · 持续收集整理中</p>
+    <p style="margin-top: 8px; font-size: 12px;">多上站实在，多干活多实践 — 世界给你的反馈远大于站在岸上看别人实践游泳。</p>
+  </div>
+</footer>
+
+<script>
+// Filter by category
+function filter(cat) {
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  const pill = document.querySelector(`.nav-pill[data-cat="${cat}"]`);
+  if (pill) pill.classList.add('active');
+
+  document.querySelectorAll('.section').forEach(s => {
+    if (cat === 'all') {
+      s.classList.remove('hidden');
+    } else {
+      s.dataset.section === cat ? s.classList.remove('hidden') : s.classList.add('hidden');
+    }
+  });
+}
+
+// Search
+function search(q) {
+  q = q.toLowerCase().trim();
+  if (!q) { filter('all'); return; }
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('hidden'));
+
+  document.querySelectorAll('.card, .reading-item, .domain-card').forEach(el => {
+    const text = el.textContent.toLowerCase();
+    el.style.opacity = text.includes(q) ? '1' : '0.2';
+    el.style.pointerEvents = text.includes(q) ? '' : 'none';
+  });
+}
+
+// Reset search opacity on filter click
+document.querySelectorAll('.nav-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.card, .reading-item, .domain-card').forEach(el => {
+      el.style.opacity = ''; el.style.pointerEvents = '';
+    });
+    document.getElementById('searchInput').value = '';
+  });
+});
+</script>
+</body>
+</html>
